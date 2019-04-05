@@ -12,3 +12,4 @@ Funktionerna som sidan har är: köpa, betala fakturor, logga in och skapa konto
 ## 4. Arkitektur (Beskriv filer och mappar)
 Jag ska ha 4 mappar: db, som innehåller databasen; img, som innehåller alla bilder som exempelvis profilbilder; public, som innehåller css och img filer;
 ## 5. (Databas med ER-diagram)
+* en fjärt från david
