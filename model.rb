@@ -11,12 +11,13 @@ def connect_db()
 end
 
 def register(params)
-    if params["Username"] && params["Email"] && params["Password"] != nil
+
+    if params["Username"] && params["Email"] && params["Password"]
 
         db = connect_db()
         hashat_password = BCrypt::Password.create(params["Password"])
 
-        db.execute("INSERT INTO Username, Email, Password VALUES(?, ?, ?)", params["Username"], params["Email"], hashat_password)
+        db.execute("INSERT INTO users(Username, Email, Password) VALUES(?, ?, ?)", params["Username"], params["Email"], hashat_password)
         return true
     else
         return false
@@ -25,10 +26,11 @@ end
 
 def login(params)
     db = connect_db()
-    pass_crypt = db.execute("SELECT Password, User_Id FROM Users WHERE Username = ?",params["Username"])
-    
-    if (BCrypt::Password.new(pass_crypt.first["Password"]) == params["Password"]) == true
-        return params["Username"], params["User_Id"]
+    user_info = db.execute("SELECT Password, User_Id FROM Users WHERE Username = ?",params["Username"])
+    username = params["Username"] 
+    if (BCrypt::Password.new(user_info.first["Password"]) == params["Password"]) == true
+        user_id = user_info.first["User_Id"]
+        return [username, user_id]
     else
         return false
     end

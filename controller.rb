@@ -3,7 +3,7 @@ require 'sinatra'
 require 'slim'
 require 'sqlite3'
 require 'bcrypt'
-#enable :sessions
+enable :sessions
 require_relative('model.rb')
 
 get('/') do
@@ -27,6 +27,7 @@ get('/login') do
 end
 
 post('/login') do
+    
     session[:User], session[:User_Id] = login(params)
     redirect('/')
 end
