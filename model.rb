@@ -24,8 +24,7 @@ def register(params)
 end
 
 def login(params)
-    db = SQLite3::Database.new('db/Users.db')
-    db.results_as_hash = true
+    db = connect_db()
     pass_crypt = db.execute("SELECT Password, User_Id FROM Users WHERE Username = ?",params["Username"])
     
     if (BCrypt::Password.new(pass_crypt.first["Password"]) == params["Password"]) == true

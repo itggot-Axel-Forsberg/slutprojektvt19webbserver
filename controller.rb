@@ -15,9 +15,11 @@ get('/register') do
 end
 
 post('/register') do
-    register(params)
-
-    redirect('/login')
+    if register(params) == true
+        redirect('/login')
+    else
+        redirect('/register_error')
+    end
 end
 
 get('/login') do
