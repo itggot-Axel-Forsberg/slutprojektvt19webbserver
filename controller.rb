@@ -31,3 +31,10 @@ post('/login') do
     session[:User], session[:User_Id] = login(params)
     redirect('/')
 end
+
+get('/store') do
+    db = connect_db()
+    prod = db.execute("SELECT * FROM products")
+
+    slim(:store, locals:{products:prod})
+end
