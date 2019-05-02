@@ -38,3 +38,16 @@ get('/store') do
 
     slim(:store, locals:{products:prod})
 end
+
+post('/store') do
+    redirect('/cart')
+end
+
+get('/cart') do
+    slim(:cart)
+end
+
+post('/cart') do 
+    add_cart(params)
+    redirect('/profile')
+end

@@ -35,3 +35,8 @@ def login(params)
         return false
     end
 end
+
+def add_cart(params)
+    db = connect_db()
+    db.execute("INSERT INTO cart(Pro_Name, Price, Pro_Id) VALUES(?, ?, ?,)", params["Pro_Name"], params["Price"], params["Pro_Id"])
+end
