@@ -34,20 +34,24 @@ end
 
 get('/store') do
     db = connect_db()
-    prod = db.execute("SELECT * FROM products")
+    item = db.execute("SELECT * FROM items")
 
-    slim(:store, locals:{products:prod})
+    slim(:store, locals:{products:item})
 end
 
-post('/store') do
-    redirect('/cart')
+post('/store/:item_id') do
+    byebug
+    add_order(params)
+    redirect('/orders')
 end
 
-get('/cart') do
+get('/cart') do 
+    #VEM är inloggad?
+    #vad har hen för cart?
+    #hämta cart
+    #hämta lineitems för cart
     slim(:cart)
 end
 
 post('/cart') do 
-    add_cart(params)
-    redirect('/profile')
 end

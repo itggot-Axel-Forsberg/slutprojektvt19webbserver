@@ -26,7 +26,7 @@ end
 
 def login(params)
     db = connect_db()
-    user_info = db.execute("SELECT Password, User_Id FROM Users WHERE Username = ?",params["Username"])
+    user_info = db.execute("SELECT Password, User_Id FROM users WHERE Username = ?",params["Username"])
     username = params["Username"] 
     if (BCrypt::Password.new(user_info.first["Password"]) == params["Password"]) == true
         user_id = user_info.first["User_Id"]
@@ -36,7 +36,9 @@ def login(params)
     end
 end
 
-def add_cart(params)
+def add_order(params)
     db = connect_db()
-    db.execute("INSERT INTO cart(Pro_Name, Price, Pro_Id) VALUES(?, ?, ?,)", params["Pro_Name"], params["Price"], params["Pro_Id"])
+    new_item = db.execute("SELECT Name, Price FROM items ")
+    #hämta product med params["pro_id"]
+    db.execute("INSERT INTO orders(Name, Price, Item_Id) VALUES(?, ?, ?,)", params["Name"], params["Price"], params["item_id"])
 end
