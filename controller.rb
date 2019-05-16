@@ -76,33 +76,42 @@ end
 
 post('/store/:item_id') do
     if check_login(session[:User_Id]) == true
-        if session[:order]
-        else
-            session[:order] = true
-            new_order(session[:User_Id])
-        end
+        #if session[:order]
+
+        #else
+            #session[:order] = true
+        session[:orderid] = new_order(session[:User_Id])
+        #end
         add_orderitem(params, session[:User_Id])
-        redirect('/orders')
+        redirect('/cart')
     else
         redirect('/login')
     end
 end
 
 # 
-get('/orders') do 
+get('/cart') do 
     #VEM är inloggad?
     #vad har hen för cart?
     #hämta cart
     #hämta orderitems för cart
     if check_login(session[:User_Id]) == true
+        order = orderinfo(session[:orderid])
         
-        
-        slim(:cart locals)  
+        slim(:cart, locals:{cart:order})
     else
         slim(:login)
+    end
     
 end
 
+post('/cart') do
+    redirect('/checkout')
+end
+
+get('/checkout') do
+    slim(:checkout)
+end
 #post('/order') do 
 
 #end

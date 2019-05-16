@@ -45,8 +45,15 @@ require 'bcrypt'
 
     def new_order(user_id)
         db = connect_db()
-        #ta datum och sätt in
-        db.execute("INSERT INTO orders(User_Id, Price) VALUES(?, 0)", user_id)
+        status = "unpaid"
+        byebug
+        if db.execute("SELECT * FROM orders WHERE User_Id = ? AND Status = ?", user_id, status) == []
+            #ta datum och sätt in
+            db.execute("INSERT INTO orders(User_Id, Price, Status) VALUES(?, 0, ?)", user_id, status)
+        else
+        end
+        orderid = db.execute("SELECT Order_Id FROM orders WHERE User_Id = ? AND Status = ?", user_id, status).first
+        return orderid["Order_Id"]
     end
 
     def add_orderitem(params, user_id)
@@ -56,4 +63,10 @@ require 'bcrypt'
         db.execute("INSERT INTO orderitem(Order_Id, Item_Id, Order_Name, Price, Amount) VALUES(?, ?, ?, ?, ?)", order["Order_Id"], params[:item_id].to_i, new_item["Item_Name"], new_item["Price"], params[:amount].to_i)
         order["Price"] += new_item["Price"] * params[:amount].to_i
         db.execute("UPDATE orders SET Price=?", order["Price"])
+    end
+
+    def orderinfo(orderid)
+        db = connect_db()
+        orderinfo = db.execute("SELECT Order_Id, Order_Name, Price, Amount FROM orderitem WHERE Order_Id = ?", orderid)
+        return orderinfo
     end
