@@ -4,4 +4,5 @@
         img src="/img/#{item[3]}"
         p #{item[2]} kr
         form action="/store/#{item["Item_Id"]}" method="POST"
+            input Name="amount" type="number" placeholder="Amount"
             input type="submit" value="Add to order"

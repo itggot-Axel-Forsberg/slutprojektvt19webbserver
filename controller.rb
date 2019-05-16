@@ -4,7 +4,7 @@ require 'slim'
 require 'sqlite3'
 require 'bcrypt'
 enable :sessions
-require_relative('model.rb')
+require_relative 'model.rb'
 #include MyModule
 #Model::Post.create_post(data)
 
@@ -49,6 +49,7 @@ post('/login') do
     else
     session[:User], session[:User_Id] = login(params)
     redirect('/')
+    end
 end
 
 # Displays login form with error message
@@ -74,18 +75,34 @@ end
 #
 
 post('/store/:item_id') do
-    add_order(params)
-    redirect('/orders')
+    if check_login(session[:User_Id]) == true
+        if session[:order]
+        else
+            session[:order] = true
+            new_order(session[:User_Id])
+        end
+        add_orderitem(params, session[:User_Id])
+        redirect('/orders')
+    else
+        redirect('/login')
+    end
 end
 
 # 
-get('/order') do 
+get('/orders') do 
     #VEM är inloggad?
     #vad har hen för cart?
     #hämta cart
-    #hämta lineitems för cart
-    slim(:cart)
+    #hämta orderitems för cart
+    if check_login(session[:User_Id]) == true
+        
+        
+        slim(:cart locals)  
+    else
+        slim(:login)
+    
 end
 
-post('/cart') do 
-end
+#post('/order') do 
+
+#end

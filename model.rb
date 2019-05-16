@@ -3,7 +3,7 @@ require 'sinatra'
 require 'slim'
 require 'sqlite3'
 require 'bcrypt'
-module 
+#module MyModule
     def connect_db()
         db = SQLite3::Database.new('db/store.db')
         db.results_as_hash = true
@@ -11,7 +11,6 @@ module
     end
 
     def register(params)
-
         if params["Username"] && params["Email"] && params["Password"]
 
             db = connect_db()
@@ -36,9 +35,25 @@ module
         end
     end
 
-    def add_order(params)
+    def check_login(sessionid)
+        if sessionid 
+            return true
+        else
+            return false
+        end
+    end
+
+    def new_order(user_id)
         db = connect_db()
-        new_item = db.execute("SELECT Name, Price FROM items ")
-        #hämta product med params["pro_id"]
-        db.execute("INSERT INTO orders(Name, Price, Item_Id) VALUES(?, ?, ?,)", params["Name"], params["Price"], params["item_id"])
+        #ta datum och sätt in
+        db.execute("INSERT INTO orders(User_Id, Price) VALUES(?, 0)", user_id)
+    end
+
+    def add_orderitem(params, user_id)
+        db = connect_db()
+        order = db.execute("SELECT Order_Id, Price FROM orders WHERE User_Id = ?", user_id).first
+        new_item = db.execute("SELECT Item_Name, Price FROM items WHERE Item_Id = ?", params[:item_id]).first
+        db.execute("INSERT INTO orderitem(Order_Id, Item_Id, Order_Name, Price, Amount) VALUES(?, ?, ?, ?, ?)", order["Order_Id"], params[:item_id].to_i, new_item["Item_Name"], new_item["Price"], params[:amount].to_i)
+        order["Price"] += new_item["Price"] * params[:amount].to_i
+        db.execute("UPDATE orders SET Price=?", order["Price"])
     end
