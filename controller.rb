@@ -5,11 +5,17 @@ require 'sqlite3'
 require 'bcrypt'
 enable :sessions
 require_relative 'model.rb'
-#include MyModule
+include MyModule
 #Model::Post.create_post(data)
 
 # Display Landing Page
 #
+#set :secured_paths,[""]
+#before do 
+
+#end
+
+
 get('/') do
     slim(:index)
 end
@@ -62,7 +68,7 @@ end
 #
 get('/store') do
     db = connect_db()
-    item = db.execute("SELECT * FROM items")
+    item = item_info()
 
     slim(:store, locals:{products:item})
 end
@@ -76,13 +82,11 @@ end
 
 post('/store/:item_id') do
     if check_login(session[:User_Id]) == true
-        #if session[:order]
 
-        #else
-            #session[:order] = true
         session[:orderid] = new_order(session[:User_Id])
-        #end
+
         add_orderitem(params, session[:User_Id])
+
         redirect('/cart')
     else
         redirect('/login')
@@ -112,6 +116,8 @@ end
 get('/checkout') do
     slim(:checkout)
 end
-#post('/order') do 
 
-#end
+post('/checkout') do
+    checkout(session[:User_Id])
+    redirect('/')
+end

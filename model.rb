@@ -3,16 +3,16 @@ require 'sinatra'
 require 'slim'
 require 'sqlite3'
 require 'bcrypt'
-#module MyModule
+module MyModule
     def connect_db()
         db = SQLite3::Database.new('db/store.db')
         db.results_as_hash = true
         return db
     end
-
+#se till att rätt format skrivs in vid insert funktioner.
     def register(params)
         if params["Username"] && params["Email"] && params["Password"]
-
+            
             db = connect_db()
             hashat_password = BCrypt::Password.create(params["Password"])
 
@@ -65,8 +65,22 @@ require 'bcrypt'
         db.execute("UPDATE orders SET Price=?", order["Price"])
     end
 
+    def item_info()
+        db = connect_db()
+        items = db.execute("SELECT * FROM items")
+        return items
+    end
+
     def orderinfo(orderid)
         db = connect_db()
         orderinfo = db.execute("SELECT Order_Id, Order_Name, Price, Amount FROM orderitem WHERE Order_Id = ?", orderid)
         return orderinfo
     end
+
+    def checkout(user_id)
+        db = connect_db()
+        status_unpaid = "unpaid"
+        status_paid = "paid"
+        db.execute("UPDATE orders SET Status = ? WHERE User_Id = ? AND Status = ?", status_paid, user_id, status_unpaid)
+    end
+end
