@@ -10,10 +10,15 @@ include MyModule
 
 # Display Landing Page
 #
-#set :secured_paths,[""]
-#before do 
 
-#end
+#Checks if user is logged in before entering some selected routes.
+#
+set :secured_paths,["/cart", "/checkout","/store/"]
+before do 
+    if settings.secured_paths.any? {|elem| request.path.start_with?(elem)} 
+        halt 403 unless session[:User_Id]
+    end
+end
 
 
 get('/') do
@@ -64,7 +69,7 @@ get('/login_error') do
     slim(:login_error)
 end
 
-# Displays items that can be purchasedfrom database
+# Displays items that can be purchased from database
 #
 get('/store') do
     db = connect_db()
@@ -81,16 +86,13 @@ end
 #
 
 post('/store/:item_id') do
-    if check_login(session[:User_Id]) == true
 
-        session[:orderid] = new_order(session[:User_Id])
+    session[:orderid] = new_order(session[:User_Id])
 
-        add_orderitem(params, session[:User_Id])
+    add_orderitem(params, session[:User_Id])
 
-        redirect('/cart')
-    else
-        redirect('/login')
-    end
+    redirect('/cart')
+    redirect('/login')
 end
 
 # 
@@ -99,13 +101,9 @@ get('/cart') do
     #vad har hen för cart?
     #hämta cart
     #hämta orderitems för cart
-    if check_login(session[:User_Id]) == true
-        order = orderinfo(session[:orderid])
+    order = orderinfo(session[:orderid])
         
-        slim(:cart, locals:{cart:order})
-    else
-        slim(:login)
-    end
+    slim(:cart, locals:{cart:order})
     
 end
 
@@ -120,4 +118,8 @@ end
 post('/checkout') do
     checkout(session[:User_Id])
     redirect('/')
+end
+
+error 403 do
+    slim(:error403)
 end

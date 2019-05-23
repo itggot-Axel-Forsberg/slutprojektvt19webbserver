@@ -11,15 +11,17 @@ module MyModule
     end
 #se till att rätt format skrivs in vid insert funktioner.
     def register(params)
-        if params["Username"] && params["Email"] && params["Password"]
-            
-            db = connect_db()
-            hashat_password = BCrypt::Password.create(params["Password"])
+        if
+            if params["Username"] && params["Email"] && params["Password"]
+                
+                db = connect_db()
+                hashat_password = BCrypt::Password.create(params["Password"])
 
-            db.execute("INSERT INTO users(Username, Email, Password) VALUES(?, ?, ?)", params["Username"], params["Email"], hashat_password)
-            return true
-        else
-            return false
+                db.execute("INSERT INTO users(Username, Email, Password) VALUES(?, ?, ?)", params["Username"], params["Email"], hashat_password)
+                return true
+            else
+                return false
+            end
         end
     end
 
@@ -35,18 +37,9 @@ module MyModule
         end
     end
 
-    def check_login(sessionid)
-        if sessionid 
-            return true
-        else
-            return false
-        end
-    end
-
     def new_order(user_id)
         db = connect_db()
         status = "unpaid"
-        byebug
         if db.execute("SELECT * FROM orders WHERE User_Id = ? AND Status = ?", user_id, status) == []
             #ta datum och sätt in
             db.execute("INSERT INTO orders(User_Id, Price, Status) VALUES(?, 0, ?)", user_id, status)
