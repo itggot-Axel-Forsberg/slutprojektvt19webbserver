@@ -1,13 +1,13 @@
 .orders
     h2 Products in cart
+    -total = 0
     -for order in cart do
         
         p #{order["Amount"]}x #{order["Order_Name"]}
         p #{order["Price"]} kr
-        -total = 0
         -total += order["Price"]
     h3 Total:
-    p #{total}
+    p #{total} kr
     a href="/store" Keep on shoppin'
     form action="/cart" method="POST"
         input type="submit" value="Go to checkout"

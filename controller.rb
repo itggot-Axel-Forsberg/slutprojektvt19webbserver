@@ -11,15 +11,29 @@ include MyModule
 # Display Landing Page
 #
 
+
+helpers do
+    def get_error(error_type)
+        if error_type == "registererror"
+            session[:error] = "You entered incorrect register credentials. Please try again."
+        elsif error_type == "loginerror"
+            session[:error] = "You entered incorrect login credentials, or you haven't registered."
+        else
+            session[:error] = "The amount of products must be 1 or more"
+        end
+    end
+end
 #Checks if user is logged in before entering some selected routes.
 #
-set :secured_paths,["/cart", "/checkout","/store/"]
+configure do
+    set :secured_paths,["/cart", "/checkout","/store/"]
+end
+
 before do 
     if settings.secured_paths.any? {|elem| request.path.start_with?(elem)} 
         halt 403 unless session[:User_Id]
     end
 end
-
 
 get('/') do
     slim(:index)
@@ -41,10 +55,14 @@ end
 #
 # @see Model#register
 post('/register') do
-    if register(params) == true
+    result = register(params)
+
+    if result == true
         redirect('/login')
     else
-        redirect('/register_error')
+        get_error(result)
+
+        redirect('/register')
     end
 end
 # Displays a login form
@@ -59,11 +77,13 @@ end
 #
 # see Model#login
 post('/login') do
-    if login(params) == false
-        redirect('/login_error')
+    result = login(params)
+    if result[2] == true
+        session[:User], session[:User_Id] = login(params)
+        redirect('/')   
     else
-    session[:User], session[:User_Id] = login(params)
-    redirect('/')
+        get_error(result)
+        redirect('/login')
     end
 end
 
@@ -88,15 +108,16 @@ end
 # @param [Int] Price, Price of the product
 # @param [Int] Username, The username
 #
-
 post('/store/:item_id') do
 
     session[:orderid] = new_order(session[:User_Id])
-
-    add_orderitem(params, session[:User_Id])
-
-    redirect('/cart')
-    redirect('/login')
+    result = add_orderitem(params, session[:User_Id])
+    if result == true
+        redirect('/cart')
+    else
+        get_error(result)
+        redirect('/store')
+    end
 end
 
 # 

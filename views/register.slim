@@ -6,3 +6,6 @@
         input name="Password" type="Password" placeholder="Password"
         
         input type="submit" value="Register"
+
+    -if session[:error]
+        p.error = "#{session[:error]}"

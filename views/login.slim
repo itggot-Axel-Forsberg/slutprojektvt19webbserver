@@ -5,4 +5,6 @@
         input name="Username" type="text" placeholder="Username" 
         input name="Password" type="Password" placeholder="Password"
         input type="submit" value="Log in"
-    
+        
+    -if session[:error]
+        p.error = "#{session[:error]}"
