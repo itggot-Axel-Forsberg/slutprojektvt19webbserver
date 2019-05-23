@@ -30,6 +30,10 @@ end
 get('/register') do
     slim(:register)
 end
+
+get('/register_error') do 
+    slim(:register_error)
+end
 # Attempts to register
 # @param [String] Username, The username
 # @param [String] Email, the users Email 

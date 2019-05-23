@@ -1,6 +1,6 @@
 .item_list
     -for item in products do 
-        p #{item[1]}
+        h3 #{item[1]}
         img src="/img/#{item[3]}"
         p #{item[2]} kr
         form action="/store/#{item["Item_Id"]}" method="POST"

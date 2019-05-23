@@ -11,7 +11,8 @@ module MyModule
     end
 #se till att rätt format skrivs in vid insert funktioner.
     def register(params)
-        if
+        byebug
+        unless params["Username"] == "" or params["Email"] == "" or params["Password"] == ""
             if params["Username"] && params["Email"] && params["Password"]
                 
                 db = connect_db()
