@@ -9,3 +9,4 @@
 
     -if session[:error]
         p.error = "#{session[:error]}"
+        - session[:error] = nil

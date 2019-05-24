@@ -1,6 +1,7 @@
 .item_list
     -if session[:error]
         p.error = "#{session[:error]}"
+        - session[:error] = nil
     -for item in products do 
         h3 #{item[1]}
         img src="/img/#{item[3]}"
