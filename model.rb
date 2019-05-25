@@ -82,6 +82,7 @@ module MyModule
     # @param [Hash] params form data from store page.
     # @option params [Integer] Amount, the amount of a specific product.
     # @option params [String] Item_Id, The id of the product that is to be added.
+    # @param [Integer] User_Id, The id of the user
     #
     # @return [Boolean] if product is added.
     #
@@ -103,21 +104,29 @@ module MyModule
         end
     end
 
-    # 
+    # Gets all items and their information from the database.
     #
-    #
+    # @return [Hash] containing all items and their information.
     def item_info()
         db = connect_db()
         items = db.execute("SELECT * FROM items")
         return items
     end
 
+    # Gets the information of all the orderitems with acertain orderid from the database.
+    #
+    # @param [Integer] Order_Id, The id of the active order.
+    #
+    # @return [Hash] containing all orderitems with a certain orderid and their information.
     def orderinfo(orderid)
         db = connect_db()
         orderinfo = db.execute("SELECT * FROM orderitem WHERE Order_Id = ?", orderid)
         return orderinfo
     end
 
+    # Finishes an order by upfating an unpaid order to a paid order.
+    #
+    # @param [Integer] User_Id, The id of the user 
     def checkout(user_id)
         db = connect_db()
         status_unpaid = "unpaid"
@@ -125,6 +134,13 @@ module MyModule
         db.execute("UPDATE orders SET Status = ? WHERE User_Id = ? AND Status = ?", status_paid, user_id, status_unpaid)
     end
 
+    # Returns all the users orders unless the user has no orders.
+    #
+    # @param [Integer] User_Id, The id of the user
+    #
+    # @return [Array] An empty array if the user has no orders.
+    #
+    # @return [hash] containing all the users orders and their information from the database.
     def user_orders(user_id)
         db = connect_db()
         if db.execute("SELECT * FROM orders WHERE User_Id = ?", user_id) == []
@@ -135,12 +151,20 @@ module MyModule
         return user_orders
     end
 
+    # Deletes an existing order and the orderitems connected to that order.
+    #
+    # @param [Integer] Order_Id, The id of the active order.
     def delete_order(orderid)
         db = connect_db()
         db.execute("DELETE FROM orders WHERE Order_Id = ?", orderid)
         db.execute("DELETE FROM orderitem WHERE Order_Id = ?", orderid)
     end
 
+    # Deletes an item from an unpaid/active order and then updates the price of the order.
+    #
+    # 
+    # @param [Integer] Order_Id, The id of the active order.
+    # @param [Integer] User_Id, The id of the user
     def delete_orderitem(item_id, orderid, userid)
         db = connect_db()
         total = 0

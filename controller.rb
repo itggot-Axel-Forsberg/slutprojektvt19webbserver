@@ -7,6 +7,8 @@ enable :sessions
 require_relative 'model.rb'
 include MyModule
 
+# Contains functions that can use session variables
+#
 helpers do
     # Selects and writes the error text corresponding to the type of error into session.
     # 
@@ -94,7 +96,7 @@ post('/login') do
     end
 end
 
-# Logs the user out by resetting session values.
+# Logs the user out by resetting session values to nil.
 #
 post('/logout') do
     session[:User_Id] = nil
@@ -111,6 +113,11 @@ get('/profile') do
     slim(:profile, locals:{orders:user_orders})
 end
 
+# Deletes an order fronm the database that the user has chosen to be deleted.
+#
+# @param [Integer] order_id, The id of the order to be deleted from the database.
+#
+# @see Model#delete_order
 post('/deleteorder/:order_id') do
     delete_order(params[:order_id])
 
@@ -163,7 +170,7 @@ end
 
 # Deletes an item from the users active order.
 #
-# @param [Integer] item_id, The id of the item to be delted from the order.
+# @param [Integer] item_id, The id of the item to be deleted from the order.
 #
 # @see Model#delete_orderitem
 post('/delete/:item_id') do
