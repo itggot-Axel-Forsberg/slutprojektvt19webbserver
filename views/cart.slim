@@ -6,8 +6,11 @@
         p #{order["Amount"]}x #{order["Order_Name"]}
         p #{order["Price"]} kr
         -total += order["Price"]
+        form action="/delete/#{order["Item_Id"]}" method="POST"
+            input type="submit" value="Delete orderitem"
     h3 Total:
     p #{total} kr
     a href="/store" Keep on shoppin'
-    form action="/cart" method="POST"
-        input type="submit" value="Go to checkout"
+    -if total > 0
+        form action="/cart" method="POST"
+            input type="submit" value="Go to checkout"

@@ -1,3 +1,17 @@
 .profile
     h2 #{session[:User]}'s Page
+    h3 Orders
     
+    -if orders.empty? == true
+        p User has no orders.
+    -else
+        a href="/cart" 
+            p Edit active order 
+
+        a href="/checkout" 
+            p Finish active order
+        -orders.each_with_index do |order, index|
+            h4 Order number #{index}
+            p Order is #{order["Status"]}
+            p Price: #{order["Price"]}
+            p Date created: #{order["Date"]}

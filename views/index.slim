@@ -1,9 +1,17 @@
 head
-    a href="/login" Log in
+    -if session[:User]
+        p You are currently logged in as #{session[:User]}
+        form action="/logout" method="POST"
+            input type="submit" value="Log out"
+        
+    -else 
+        a href="/login" Log in
 
-    p Do you not have an account?
-    a href="/register" Register
-
+        p Do you not have an account?
+        a href="/register" Register
+    
 main
     a href="/store"
         h2 Store
+    a href="/profile"
+        h2 Profile
