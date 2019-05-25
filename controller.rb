@@ -52,7 +52,8 @@ get('/register') do
     slim(:register)
 end
 
-# Attempts to register
+# Attempts to register the user and shows errormessage if not succesful.
+#
 # @param [String] Username, The username
 # @param [String] Email, the users Email 
 # @param [String] Password, The password
@@ -79,6 +80,7 @@ get('/login') do
 end
 
 # Attempts login and updates the session
+#
 # @param [String] Username, The username
 # @param [String] Password, The password
 #
@@ -115,7 +117,7 @@ end
 
 # Deletes an order fronm the database that the user has chosen to be deleted.
 #
-# @param [Integer] order_id, The id of the order to be deleted from the database.
+# @param [Integer]:Order_Id, The id of the order to be deleted from the database.
 #
 # @see Model#delete_order
 post('/deleteorder/:order_id') do
@@ -135,15 +137,14 @@ end
 
 # Adds a product to the orderlist to a new or already existing order.
 # 
-# @param [String] Name, Name of product
-# @param [Int] Price, Price of the product
-# @param [Int] Username, The username
+# @param [Integer] Amount, Price of the product
+# @param [Integer]:Item_Id, The username
 #
 # @see Model#new_order
 # @see Model#add_orderitem
 # @see get_error
 post('/store/:item_id') do
-
+    byebug
     session[:orderid] = new_order(session[:User_Id])
     result = add_orderitem(params, session[:User_Id])
     if result == true
@@ -170,7 +171,7 @@ end
 
 # Deletes an item from the users active order.
 #
-# @param [Integer] item_id, The id of the item to be deleted from the order.
+# @param [Integer]:Item_Id, The id of the item to be deleted from the order.
 #
 # @see Model#delete_orderitem
 post('/delete/:item_id') do
