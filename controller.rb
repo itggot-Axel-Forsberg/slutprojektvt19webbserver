@@ -25,7 +25,7 @@ end
 # Sets which routes that are secured.
 #
 configure do
-    set :secured_paths,["/cart", "/checkout","/store/","/profile", "/delete/"]
+    set :secured_paths,["/cart", "/checkout","/store/","/profile","/delete/","/deleteorder/"]
 end
 
 # Checks if user is logged in before entering some selected routes.
@@ -109,6 +109,12 @@ get('/profile') do
     user_orders = user_orders(session[:User_Id])
 
     slim(:profile, locals:{orders:user_orders})
+end
+
+post('/deleteorder/:order_id') do
+    delete_order(params[:order_id])
+
+    redirect('/profile')
 end
 
 # Displays items that can be purchased from database.

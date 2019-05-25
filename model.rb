@@ -135,6 +135,12 @@ module MyModule
         return user_orders
     end
 
+    def delete_order(orderid)
+        db = connect_db()
+        db.execute("DELETE FROM orders WHERE Order_Id = ?", orderid)
+        db.execute("DELETE FROM orderitem WHERE Order_Id = ?", orderid)
+    end
+
     def delete_orderitem(item_id, orderid, userid)
         db = connect_db()
         total = 0
